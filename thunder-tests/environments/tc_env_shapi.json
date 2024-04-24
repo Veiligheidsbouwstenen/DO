@@ -1,0 +1,211 @@
+{
+    "_id": "b82e9a04-d4ac-4f0f-b0eb-705c5fec7cbb",
+    "name": "SH_API",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2024-04-24T12:12:39.858Z",
+    "modified": "2024-04-24T12:12:39.858Z",
+    "data": [
+        {
+            "name": "url",
+            "value": "https://digitaal-ondertekenen-api-int.vlaanderen.be/"
+        },
+        {
+            "name": "urlti",
+            "value": "https://handtekenmapapi3-ti.keysign.eu/"
+        },
+        {
+            "name": "cid",
+            "value": "Thunder"
+        },
+        {
+            "name": "cidti",
+            "value": "thunder"
+        },
+        {
+            "name": "csecret",
+            "value": "1C65FC9C5EA8C5A1B16236EE4F49107E51F258BE2C1A4D44DF6AFA2F8C19E361"
+        },
+        {
+            "name": "csecretti",
+            "value": "44DD702ECC0B99E5E00001037A233566AB20AB4495E1A642218FDC2C29D03CB2"
+        },
+        {
+            "name": "uname",
+            "value": "digitaaltekenen@vlaanderen.be"
+        },
+        {
+            "name": "unameti",
+            "value": "mark.lemmens@vlaanderen.be"
+        },
+        {
+            "name": "upass",
+            "value": "D!g!t44lT3k3n3n"
+        },
+        {
+            "name": "scope",
+            "value": "mark.lemmens@vlaanderen.be"
+        },
+        {
+            "name": "gtype",
+            "value": "password"
+        },
+        {
+            "name": "btoken",
+            "value": "vHE62NTtnOxSo6vLjxJdNvDoL2h5TmtkObkAPMn7jxj87t_ebnnNc6iMoBLXD60nWKzhnLdxw24XHPekUPjrnAC7Dad8RiNaP-koK0J-ueAyl-QR9q41F-WzkXSsIYdRe2a_ET7OaGpuDdXDkkhspwxpn1CDAUBnyG1g5Piog3w9bAaygmODSmoIB8uCyVo5jyvN5QperGYFpCXTUfMGgEhPz0Hiz1GEO7tfi8YjI-xVego0StrBtibK7vSze-Mf73Jd2ryJOCTtpCa_aBO5-mR5ggXS1XBBXYIxueYz3u8EKo5Yh-nTHbDJf5boTRYwOQKC0MZ8rwaZ1GR1mLf5MrKupwOIl7ZZQEJmd-nz5UoZ9g-DX9osvTdhAoysc7jUGJh3HK3f32nA7cLWy-WqHKItJwYzn0F2Yxje_fJdOOjLGcoM0TX8PBCQdgMWgphJFg9dSPiC3hF6gB98Yda8T1Rl8Zpe3-Pj7tYyokfuJ04CF-RN2bNln-Tr88oJv2TuU0FIRIlygyN8VJ-iLSUvOBEG-6qAu4G4ZQ9otpoKWyc"
+        },
+        {
+            "name": "rtoken",
+            "value": ""
+        },
+        {
+            "name": "pid",
+            "value": "537293"
+        },
+        {
+            "name": "did",
+            "value": "867011"
+        },
+        {
+            "name": "dstatus",
+            "value": "ALL"
+        },
+        {
+            "name": "pnumber",
+            "value": "1"
+        },
+        {
+            "name": "rppage",
+            "value": "100"
+        },
+        {
+            "name": "Pendingp",
+            "value": "PENDING"
+        },
+        {
+            "name": "Declinedp",
+            "value": "DECLINED"
+        },
+        {
+            "name": "Signedp",
+            "value": "SIGNED"
+        },
+        {
+            "name": "Completedp",
+            "value": "COMPLETED"
+        },
+        {
+            "name": "Draftp",
+            "value": "DRAFT"
+        },
+        {
+            "name": "urltiDHM",
+            "value": "https://handtekenmapapi-ti.vlaanderen.be/"
+        },
+        {
+            "name": "csecretILVO",
+            "value": "22C6B88476D6947202FE7AF202E2A3E45AD26CEBDEAD620326FE704CC19FB1E7"
+        },
+        {
+            "name": "cidILVO",
+            "value": "PlanIT_Timesheets"
+        },
+        {
+            "name": "unameILVO",
+            "value": "it@ilvo.vlaanderen.be"
+        },
+        {
+            "name": "upassILVO",
+            "value": "Signing4PlanIT"
+        },
+        {
+            "name": "urlDHM",
+            "value": "https://handtekenmapapi.vlaanderen.be/"
+        },
+        {
+            "name": "DOTI",
+            "value": "https://digitaal-ondertekenen-api-ti.vlaanderen.be/"
+        },
+        {
+            "name": "urltido",
+            "value": "https://digitaal-ondertekenen-api-int-ti.vlaanderen.be/"
+        },
+        {
+            "name": "cidtido",
+            "value": "PowerAutomateDHM"
+        },
+        {
+            "name": "csecrettido",
+            "value": "5FF95099D2B44A11A39489CF7F72A0D9DFD2104301AA16A4DC37068343B1F302"
+        },
+        {
+            "name": "openapidoti",
+            "value": "https://digitaal-ondetekenen-openapi-ti.vlaanderen.be/"
+        },
+        {
+            "name": "openapido",
+            "value": "https://digitaal-ondertekenen-openapi.vlaanderen.be/"
+        },
+        {
+            "name": "apiintdo",
+            "value": "https://digitaal-ondertekenen-api-int.vlaanderen.be/"
+        },
+        {
+            "name": "doapi",
+            "value": "https://digitaal-ondertekenen-api.vlaanderen.be/"
+        },
+        {
+            "name": "cidtestti",
+            "value": "thunder"
+        },
+        {
+            "name": "csecrettestti",
+            "value": "D6A171A658A98614D914A981E6AD5395671CF88FF5C6FE4B18EFD86E35AC9C05"
+        },
+        {
+            "name": "ctype",
+            "value": "client_credentials"
+        },
+        {
+            "name": "WisaCID",
+            "value": ""
+        },
+        {
+            "name": "WisaCS",
+            "value": ""
+        },
+        {
+            "name": "WisaTU",
+            "value": ""
+        },
+        {
+            "name": "WisaWW",
+            "value": ""
+        },
+        {
+            "name": "gtcc",
+            "value": "client_credentials"
+        },
+        {
+            "name": "scopem",
+            "value": "ovo002949@vlaanderen.be"
+        },
+        {
+            "name": "UnameEnd",
+            "value": "icthelpdesk@zorgleuven.be"
+        },
+        {
+            "name": "UpassEnd",
+            "value": "24oxNOIMGfRC8aYOKotP"
+        },
+        {
+            "name": "CIDEnd",
+            "value": "Greenvalley"
+        },
+        {
+            "name": "CSecretEnd",
+            "value": "3C18A0F41EFD0086D402667A755E8998DFC2CCEECC0F834D18A7EF02CF84C522"
+        }
+    ],
+    "envFile": "..\\DHM\\postman\\home.env"
+}

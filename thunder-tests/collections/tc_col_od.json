@@ -1,0 +1,199 @@
+{
+    "_id": "12802bd1-1a8a-43db-88d0-5fdba998b26a",
+    "colName": "OD",
+    "created": "2024-04-24T13:52:01.758Z",
+    "sortNum": 30000,
+    "folders": [],
+    "requests": [
+        {
+            "_id": "87808514-86fe-4241-bc60-76d220873b45",
+            "colId": "12802bd1-1a8a-43db-88d0-5fdba998b26a",
+            "containerId": "",
+            "name": "Get Templates",
+            "url": "{{url}}/v4/settings/templates/5000/1",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-04-24T13:52:10.069Z",
+            "modified": "2024-04-24T13:53:15.672Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer pFvBcRPysacaDn5FRqqKzn_ZFTcoGWtOi5jIYD54c2UE2UHzNbae2XG2LShT7407fs50SQBUQlzgRfOzGYWHujMEtK2_DOBjGRZHpD-HxmvTgnzPxmaTLKiki4HPNX1DxF76oAvoYKUFvmF0dP5dpvmZJGyHzW54RKMVYznMKo_-hzc1CEwez0_2ud3i1FL3hpobnIThvSwQQV9JbCeT2YFpg5HXGya67nVUfApZLWA-2rlPDPmf69ngiLQHQMn8Vy0KKZDKiKXX-RCoL0RcWGjoIKRfEpsO3Heb1yPsDy2Z4cVpF_o3uscm1or_G4QjZQCGzrqqxSc7NwWCGjZc72b-eThjctHZ24ZH3qWIP5PEsmF-5YhszxlmxcPLVW-M0ARS4nK5RsAzDiXqlDBE82OgZyI1uMikGdmhZzLvzll6lQoclEfvpxZ50MalqQyM_mWXsaWplinWv-Y7ABrQuL6ISdrEeBc6zYABUUswaH8mEkdBx1BnQCAIcukY978_",
+                    "isDisabled": true
+                },
+                {
+                    "name": "Accept",
+                    "value": "application/json"
+                },
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                },
+                {
+                    "name": "x-enterprise",
+                    "value": "true"
+                },
+                {
+                    "name": "x-search-text",
+                    "value": "temp",
+                    "isDisabled": true
+                },
+                {
+                    "name": "x-total-records",
+                    "value": "",
+                    "isDisabled": true
+                }
+            ],
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{btoken}}"
+            }
+        },
+        {
+            "_id": "d51d43da-26cd-487b-a29e-7b11b756329b",
+            "colId": "12802bd1-1a8a-43db-88d0-5fdba998b26a",
+            "containerId": "",
+            "name": "Client Credentials Authentication",
+            "url": "{{url}}/authenticate",
+            "method": "POST",
+            "sortNum": 5000,
+            "created": "2024-04-24T13:52:30.652Z",
+            "modified": "2024-04-24T13:52:30.652Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "application/json"
+                },
+                {
+                    "name": "Content-Type",
+                    "value": "application/x-www-form-urlencoded"
+                },
+                {
+                    "name": "Authorization",
+                    "value": "Bearer QUVTMjU2LUdDTaJLAIRDowpO90BUlXogBc5Vpd3qexlut2gGYVJci0ZCrFzIrCP1ipExEqZkpIFC8B99kj0XIcLvZfLGrmFwypU=",
+                    "isDisabled": true
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formencoded",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "client_id",
+                        "value": "{{cid}}"
+                    },
+                    {
+                        "name": "client_secret",
+                        "value": "{{csecret}}"
+                    },
+                    {
+                        "name": "grant_type",
+                        "value": "{{gtcc}}"
+                    }
+                ]
+            },
+            "auth": {
+                "type": "none"
+            },
+            "tests": [
+                {
+                    "type": "set-env-var",
+                    "custom": "json.access_token",
+                    "action": "setto",
+                    "value": "{{btoken}}"
+                }
+            ],
+            "postReq": {
+                "inlineScripts": [
+                    {
+                        "script": [
+                            "var jsonData = JSON.parse(responseBody);",
+                            "postman.setGlobalVariable(\"token\", jsonData.access_token);",
+                            "",
+                            "var jsonData = JSON.parse(responseBody);",
+                            "postman.setGlobalVariable(\"refreshtoken\", jsonData.refresh_token);",
+                            "",
+                            ""
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "_id": "9583d11f-2095-410c-a398-38b6e2f69d83",
+            "colId": "12802bd1-1a8a-43db-88d0-5fdba998b26a",
+            "containerId": "",
+            "name": "Password Authentication",
+            "url": "{{url}}/authenticate",
+            "method": "POST",
+            "sortNum": 7500,
+            "created": "2024-04-24T13:52:43.418Z",
+            "modified": "2024-04-24T13:52:43.418Z",
+            "headers": [
+                {
+                    "name": "Accept",
+                    "value": "application/json"
+                },
+                {
+                    "name": "Content-Type",
+                    "value": "application/x-www-form-urlencoded"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formencoded",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "client_id",
+                        "value": "{{cid}}"
+                    },
+                    {
+                        "name": "client_secret",
+                        "value": "{{csecret}}"
+                    },
+                    {
+                        "name": "grant_type",
+                        "value": "{{gtype}}"
+                    },
+                    {
+                        "name": "username",
+                        "value": "{{uname}}"
+                    },
+                    {
+                        "name": "password",
+                        "value": "{{upass}}"
+                    }
+                ]
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{btoken}}"
+            },
+            "tests": [
+                {
+                    "type": "set-env-var",
+                    "custom": "json.access_token",
+                    "action": "setto",
+                    "value": "{{btoken}}"
+                }
+            ],
+            "postReq": {
+                "inlineScripts": [
+                    {
+                        "script": [
+                            "var jsonData = JSON.parse(responseBody);",
+                            "postman.setGlobalVariable(\"token\", jsonData.access_token);",
+                            "",
+                            "var jsonData = JSON.parse(responseBody);",
+                            "postman.setGlobalVariable(\"refreshtoken\", jsonData.refresh_token);",
+                            "",
+                            ""
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
