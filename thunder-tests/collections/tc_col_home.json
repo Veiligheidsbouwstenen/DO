@@ -355,7 +355,7 @@
             "method": "POST",
             "sortNum": 35000,
             "created": "2024-04-24T12:22:21.659Z",
-            "modified": "2024-04-24T12:22:21.659Z",
+            "modified": "2024-04-26T05:58:38.774Z",
             "headers": [
                 {
                     "name": "Accept",
@@ -379,12 +379,11 @@
                     "isDisabled": true
                 }
             ],
-            "params": [],
             "body": {
                 "type": "binary",
                 "raw": "",
                 "form": [],
-                "binary": "..\\DHM\\postman\\testdoc2.txt"
+                "binary": "../../../Users/saaaa5869/OneDrive - Vlaamse overheid - Office 365/DHM/postman/testdoc2.txt"
             },
             "auth": {
                 "type": "bearer",
@@ -399,5 +398,12 @@
                 }
             ]
         }
-    ]
+    ],
+    "settings": {
+        "runOptions": {
+            "delay": 0,
+            "iterations": 1000,
+            "dataFilePath": ""
+        }
+    }
 }

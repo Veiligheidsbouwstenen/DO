@@ -10,20 +10,43 @@ prd_url = "https://digitaal-ondertekenen-openapi.vlaanderen.be"
 # Endpoints voor verificatie
 client_credentials_endpoint = "/authenticate"
 password_credentials_endpoint = "/authenticate"
-enterprise_templates_endpoint = "/v4/settings/templates/5000/1"
 
-# Globale variabele om access_token op te slaan
-access_token = None
-
+# Functie voor authenticatie
 def authenticate():
     global access_token
     base_url = ti_url if environment.get() == "T&I" else prd_url
     client_id = client_id_entry.get()
     client_secret = client_secret_entry.get()
+    username = username_entry.get()
+    password = password_entry.get()
 
+    # Authenticatie voor Client Credentials
+    client_auth_response = authenticate_client_credentials(base_url, client_id, client_secret)
+    print(f"Client Credentials antwoord: {client_auth_response.status_code}, {client_auth_response.text}")
+
+    if client_auth_response.status_code == 200:
+        client_status_var.set("GESLAAGD")
+        access_token = client_auth_response.json().get("access_token")
+        client_tree.tag_configure('client_success', background='green')
+    else:
+        client_status_var.set(f"GEFAALD ({client_auth_response.status_code})")
+        client_tree.tag_configure('client_fail', background='red')
+
+    # Authenticatie voor Password Credentials
+    password_auth_response = authenticate_password_credentials(base_url, client_id, client_secret, username, password)
+    print(f"Wachtwoordaanmelding antwoord: {password_auth_response.status_code}, {password_auth_response.text}")
+
+    if password_auth_response.status_code == 200:
+        password_status_var.set("GESLAAGD")
+        access_token = password_auth_response.json().get("access_token")
+        password_tree.tag_configure('password_success', background='green')
+    else:
+        password_status_var.set(f"GEFAALD ({password_auth_response.status_code})")
+        password_tree.tag_configure('password_fail', background='red')
+
+# Functie voor authenticatie van Client Credentials
+def authenticate_client_credentials(base_url, client_id, client_secret):
     url = f"{base_url}{client_credentials_endpoint}"
-    print(f"Authenticating with URL: {url}")
-
     response = requests.post(
         url,
         headers={"Content-Type": "application/x-www-form-urlencoded"},
@@ -33,27 +56,10 @@ def authenticate():
             "client_secret": client_secret
         }
     )
+    return response
 
-    print(f"Client Credentials antwoord: {response.status_code}, {response.text}")
-
-    if response.status_code == 200:
-        access_token = response.json().get("access_token")
-        result_label.config(bg="green", text="Client GESLAAGD")
-
-        if username_entry.get() and password_entry.get():
-            check_password_credentials(client_id, client_secret, base_url)
-    else:
-        result_label.config(bg="red", text=f"Client GEFAALD ({response.status_code})")
-        print(f"Fout bij authenticatie: {response.status_code}, {response.text}")
-
-def check_password_credentials(client_id, client_secret, base_url):
-    global access_token
-
-    username = username_entry.get()
-    password = password_entry.get()
-
-    print("Checking Password Credentials")
-
+# Functie voor authenticatie van Password Credentials
+def authenticate_password_credentials(base_url, client_id, client_secret, username, password):
     url = f"{base_url}{password_credentials_endpoint}"
     response = requests.post(
         url,
@@ -66,15 +72,7 @@ def check_password_credentials(client_id, client_secret, base_url):
             "client_secret": client_secret
         }
     )
-
-    print(f"Wachtwoordaanmelding antwoord: {response.status_code}, {response.text}")
-
-    if response.status_code == 200:
-        access_token = response.json().get("access_token")
-        result_label.config(bg="green", text="Pass GESLAAGD")
-    else:
-        result_label.config(bg="red", text=f"Pass GEFAALD ({response.status_code})")
-        print(f"Fout bij wachtwoordaanmelding: {response.status_code}, {response.text}")
+    return response
 
 def show_popup(title, message):
     popup = Toplevel(app)
@@ -106,7 +104,7 @@ def check_package():
     style.theme_use("default")
 
     # Define style for the treeview header and rows
-    style.configure("Treeview.Heading", background="red", foreground="white", font=("Arial", 12, "bold"))
+    style.configure("Treeview.Heading", background="black", foreground="white", font=("Arial", 12, "bold"))
     style.configure("Treeview", background="black", fieldbackground="black", foreground="white", font=("Arial", 12))
 
     tree_frame = tk.Frame(package_window, bg='black')
@@ -152,15 +150,29 @@ def check_package():
     close_button = tk.Button(button_frame, text="Afsluiten", command=package_window.destroy, font=("Arial", 12))
     close_button.pack(side=tk.LEFT, padx=5, pady=5)
 
+# Functie om achtergrondkleur van radiobuttons te veranderen op basis van selectie
+def update_radiobutton_bg():
+    t_and_i_button.config(bg='black' if environment.get() != "T&I" else 'green')
+    prd_button.config(bg='black' if environment.get() != "PRD" else 'green')
+
 # Maak de hoofdapplicatievenster
 app = tk.Tk()
 app.title("Digitaal Ondertekenen API Tool")
 app.configure(bg='black')
 
 # Radiobuttons voor omgevingsselectie
+environment_frame = tk.Frame(app, bg='black')
+environment_frame.pack(padx=20, pady=10)
 environment = tk.StringVar(value="PRD")
-tk.Radiobutton(app, text="T&I", variable=environment, value="T&I", bg='black', fg='white').pack()
-tk.Radiobutton(app, text="Productie", variable=environment, value="PRD", bg='black', fg='white').pack()
+
+t_and_i_button = tk.Radiobutton(environment_frame, text="T&I", variable=environment, value="T&I", bg='black', fg='white', command=update_radiobutton_bg)
+t_and_i_button.pack(side=tk.LEFT)
+
+prd_button = tk.Radiobutton(environment_frame, text="Productie", variable=environment, value="PRD", bg='black', fg='white', command=update_radiobutton_bg)
+prd_button.pack(side=tk.LEFT)
+
+# Functie voor het bijwerken van achtergrondkleur van radiobuttons
+update_radiobutton_bg()
 
 # Labels en Entry velden voor credentials
 font_style = ("Arial", 12)
@@ -168,7 +180,6 @@ entry_bg = 'green'
 entry_fg = 'white'
 entry_width = 80
 
-# Maak de invoervelden groter
 tk.Label(app, text="Client ID", bg='black', fg='white', font=font_style).pack()
 client_id_entry = tk.Entry(app, font=font_style, bg=entry_bg, fg=entry_fg, width=entry_width)
 client_id_entry.pack()
@@ -177,17 +188,42 @@ tk.Label(app, text="Client Secret", bg='black', fg='white', font=font_style).pac
 client_secret_entry = tk.Entry(app, font=font_style, bg=entry_bg, fg=entry_fg, width=entry_width)
 client_secret_entry.pack()
 
-tk.Label(app, text="Username", bg='black', fg='white', font=font_style).pack()
+tk.Label(app, text="Technical User", bg='black', fg='white', font=font_style).pack()
 username_entry = tk.Entry(app, font=font_style, bg=entry_bg, fg=entry_fg, width=entry_width)
 username_entry.pack()
 
-tk.Label(app, text="Password", bg='black', fg='white', font=font_style).pack()
+tk.Label(app, text="Wachtwoord Technical User", bg='black', fg='white', font=font_style).pack()
 password_entry = tk.Entry(app, font=font_style, bg=entry_bg, fg=entry_fg, width=entry_width)
 password_entry.pack()
 
-# Resultaat label
-result_label = tk.Label(app, text="Het authenticeren antwoord wordt hier neergezet.", bg='black', fg='white', font=font_style)
-result_label.pack()
+# Resultaat labels
+result_frame = tk.Frame(app, bg='black')
+result_frame.pack(pady=10)
+
+# Frame voor de Treeview-widgets
+treeview_frame = tk.Frame(result_frame, bg='black')
+treeview_frame.pack()
+
+client_tree = ttk.Treeview(treeview_frame, columns=("Status",), show="headings", style="Treeview")
+client_tree.heading('#1', text='Client', anchor='center')
+client_tree.pack(side=tk.LEFT, padx=(0, 5), fill=tk.BOTH, expand=True)
+
+password_tree = ttk.Treeview(treeview_frame, columns=("Status",), show="headings", style="Treeview")
+password_tree.heading('#1', text='Wachtwoord', anchor='center')
+password_tree.pack(side=tk.LEFT, padx=(5, 0), fill=tk.BOTH, expand=True)
+
+client_status_var = tk.StringVar()
+password_status_var = tk.StringVar()
+
+client_tree.insert('', 'end', values=(client_status_var.get(),), tags=('client_success', 'client_fail'))
+password_tree.insert('', 'end', values=(password_status_var.get(),), tags=('password_success', 'password_fail'))
+
+# Stijl instellen voor de Treeview
+style = ttk.Style()
+style.theme_use("clam")
+
+style.configure("Treeview.Heading", font=("Arial", 14, "bold"), background="black", foreground="white")
+style.configure("Treeview", font=("Arial", 12), background="black", foreground="white", fieldbackground="black")
 
 # Frame voor knoppen
 button_frame = tk.Frame(app, bg='black')
