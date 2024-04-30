@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import messagebox, Toplevel
 from tkinter import ttk
 import requests
 
@@ -18,6 +17,9 @@ access_token = None
 # Functie voor authenticatie
 def authenticate():
     global access_token
+    treeview_frame.pack_forget()  # Verberg de sjablonen frame bij elke authenticatiepoging
+    templates_frame.pack_forget()  # Verberg de sjablonen frame bij elke authenticatiepoging
+
     base_url = ti_url if environment.get() == "T&I" else prd_url
     client_id = client_id_entry.get()
     client_secret = client_secret_entry.get()
@@ -47,6 +49,8 @@ def authenticate():
     else:
         password_status_var.set(f"GEFAALD ({password_auth_response.status_code})")
         password_tree.tag_configure('password_fail', background='red')
+
+    treeview_frame.pack(pady=10)  # Toon alleen de client en wachtwoord tabel na succesvolle test
 
 # Functie voor authenticatie van Client Credentials
 def authenticate_client_credentials(base_url, client_id, client_secret):
@@ -80,6 +84,7 @@ def authenticate_password_credentials(base_url, client_id, client_secret, userna
 
 def get_enterprise_templates():
     global access_token
+    treeview_frame.pack_forget()  # Verberg de client en wachtwoord frame bij het ophalen van sjablonen
 
     if access_token:
         base_url = ti_url if environment.get() == "T&I" else prd_url
@@ -96,38 +101,21 @@ def get_enterprise_templates():
 
         if response.status_code == 200:
             templates = response.json()
-            show_templates_window(templates)
+            update_templates_view(templates)
+            templates_frame.pack(expand=True, fill='both', pady=10)  # Toon de sjablonen
         else:
             show_popup("Fout", f"Kan geen sjablonen ophalen: {response.status_code}")
             print(f"Fout bij het ophalen van sjablonen: {response.status_code}, {response.text}")
     else:
         show_popup("Fout", "U moet eerst authentiseren om sjablonen op te halen.")
 
-def show_templates_window(templates):
-    templates_window = Toplevel(app)
-    templates_window.title("Enterprise Sjablonen")
-    templates_window.configure(bg='black')
-
-    style = ttk.Style()
-    style.theme_use("clam")
-
-    style.configure("Treeview.Heading", font=("Arial", 14, "bold"), background="black", foreground="red")
-    style.configure("Treeview", font=("Arial", 12, "bold"), background="black", foreground="green", fieldbackground="black", rowheight=30)
-
-    tree = ttk.Treeview(templates_window, columns=("Naam", "ID"), style="Treeview")
-    tree.heading('#1', text='Naam', anchor='center')
-    tree.heading('#2', text='ID', anchor='center')
-
+def update_templates_view(templates):
+    templates_tree.delete(*templates_tree.get_children())  # Leeg de vorige sjablonen
     for template in templates:
-        tree.insert('', 'end', text='', values=(template['template_name'], template['template_id']), tags='success')
-
-    tree.pack(expand=True, fill='both')
-
-    close_button = tk.Button(templates_window, text="Afsluiten", command=templates_window.destroy, font=("Arial", 12))
-    close_button.pack(pady=10)
+        templates_tree.insert('', 'end', text='', values=(template['template_name'], template['template_id']), tags='success')
 
 def show_popup(title, message):
-    popup = Toplevel(app)
+    popup = tk.Toplevel(app)
     popup.title(title)
     popup.configure(bg='black')
 
@@ -165,7 +153,6 @@ entry_bg = 'green'
 entry_fg = 'white'
 entry_width = 80
 
-# Maak de invoervelden groter
 tk.Label(app, text="Client ID", bg='black', fg='white', font=font_style).pack()
 client_id_entry = tk.Entry(app, font=font_style, bg=entry_bg, fg=entry_fg, width=entry_width)
 client_id_entry.pack()
@@ -182,13 +169,8 @@ tk.Label(app, text="Wachtwoord Technical User", bg='black', fg='white', font=fon
 password_entry = tk.Entry(app, font=font_style, bg=entry_bg, fg=entry_fg, width=entry_width)
 password_entry.pack()
 
-# Resultaat labels
-result_frame = tk.Frame(app, bg='black')
-result_frame.pack(pady=10)
-
 # Frame voor de Treeview-widgets
 treeview_frame = tk.Frame(app, bg='black')
-treeview_frame.pack()
 
 client_tree = ttk.Treeview(treeview_frame, columns=("Status",), show="headings", style="Treeview")
 client_tree.heading('#1', text='Client', anchor='center')
@@ -204,6 +186,12 @@ password_status_var = tk.StringVar()
 client_tree.insert('', 'end', values=(client_status_var.get(),), tags=('client_success', 'client_fail'))
 password_tree.insert('', 'end', values=(password_status_var.get(),), tags=('password_success', 'password_fail'))
 
+# Sjablonen frame en treeview
+templates_frame = tk.Frame(app, bg='black')
+templates_tree = ttk.Treeview(templates_frame, columns=("Naam", "ID"), show="headings", style="Treeview")
+templates_tree.heading('#1', text='Naam', anchor='center')
+templates_tree.heading('#2', text='ID', anchor='center')
+templates_tree.pack(expand=True, fill='both')
 
 # Stijl instellen voor de Treeview
 style = ttk.Style()
@@ -225,9 +213,5 @@ templates_button.pack(side=tk.LEFT, padx=5, pady=5)
 
 close_button = tk.Button(button_frame, text="Afsluiten", command=close_app, font=font_style)
 close_button.pack(side=tk.LEFT, padx=5, pady=5)
-
-# Resultaatlabels
-result_label = tk.Label(app, text="", bg='black', fg='white', font=font_style)
-result_label.pack()
 
 app.mainloop()
