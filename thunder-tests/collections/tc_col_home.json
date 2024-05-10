@@ -402,7 +402,7 @@
     "settings": {
         "runOptions": {
             "delay": 0,
-            "iterations": 1000,
+            "iterations": 100,
             "dataFilePath": ""
         }
     }
