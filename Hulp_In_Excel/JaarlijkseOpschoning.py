@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import pandas as pd
 import os
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import Font
 
 def custom_style():
     style = {
@@ -39,41 +41,56 @@ def run_script():
         for i in speciesdata:
             filtered_data = data[data["ID"] == i]
             output_path = f"{output_dir}/{i}.xlsx"
-            filtered_data.to_excel(output_path, index=False)
+            with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
+                filtered_data.to_excel(writer, index=False)
+                workbook = writer.book
+                worksheet = writer.sheets['Sheet1']
+
+                for column_cells in worksheet.columns:
+                    length = max(len(as_text(cell.value)) for cell in column_cells) + 2
+                    worksheet.column_dimensions[get_column_letter(column_cells[0].column)].width = length
+
+                for cell in worksheet["1:1"]:
+                    cell.font = Font(bold=True)
 
         os.startfile(output_dir)
         messagebox.showinfo("Voltooid", "Proces is perfect doorlopen!")
     except Exception as e:
         messagebox.showerror("Error", f"Er is een fout opgetreden: {str(e)}")
 
+def as_text(value):
+    if value is None:
+        return ""
+    return str(value)
+
+def close_application():
+    root.destroy()
+
 root = tk.Tk()
 root.title("Jaarlijkse opschoonactie Digitaal Ondertekenen")
 style = custom_style()
 
 root.config(bg=style["bg"])
-root.geometry('800x250')  # Adjust window size to make sure all elements are visible
+root.geometry('1000x200')  # Adjust window size to make sure all elements are visible
 
+# Create grid layout
+file_button = tk.Button(root, text="Selecteer het Excel bestand", command=browse_file, **style["button"])
 file_label = tk.Label(root, text="Geen bestand geselecteerd", bg=style["bg"], fg=style["fg"], font=style["font"])
-file_label.pack(pady=(10, 0), fill=tk.X)
-
-buttons_frame = tk.Frame(root, bg=style["bg"])
-buttons_frame.pack(pady=(10, 10))
-
-tk.Button(buttons_frame, text="Selecteer het Excel bestand", command=browse_file, **style["button"]).pack(side=tk.LEFT, padx=(10, 20))
-tk.Button(buttons_frame, text="Selecteer de map waar alles opgeslagen wordt", command=browse_folder, **style["button"]).pack(side=tk.LEFT)
-
+folder_button = tk.Button(root, text="Selecteer de map waar alles opgeslagen wordt", command=browse_folder, **style["button"])
 folder_label = tk.Label(root, text="Geen map geselecteerd", bg=style["bg"], fg=style["fg"], font=style["font"])
-folder_label.pack(pady=(0, 10), fill=tk.X)
+label_sheet_name = tk.Label(root, text="Bladnaam:", bg=style["bg"], fg=style["fg"], font=style["font"])
+sheet_name_entry = tk.Entry(root, font=("Arial", 14), bg='black', fg='white', insertbackground='white', width=40)
+start_button = tk.Button(root, text="Starten", command=run_script, **style["button"])
+close_button = tk.Button(root, text="Sluiten", command=close_application, **style["button"])
 
-sheet_name_frame = tk.Frame(root, bg=style["bg"])
-sheet_name_frame.pack(fill=tk.X, pady=(0, 20))
-
-tk.Label(sheet_name_frame, text="Bladnaam:", bg=style["bg"], fg=style["fg"], font=style["font"]).pack(side=tk.LEFT, padx=(20, 0))
-
-sheet_name_entry = tk.Entry(sheet_name_frame, font=("Arial", 14), bg='black', fg='white', insertbackground='white', width=80)
-sheet_name_entry.pack(side=tk.LEFT, padx=(0, 20))
-sheet_name_entry.config(highlightbackground='red', highlightcolor='red', highlightthickness=1)
-
-tk.Button(root, text="Starten", command=run_script, **style["button"]).pack(pady=(0, 10))
+# Position with grid
+file_button.grid(row=0, column=0, padx=(10, 20), pady=(10, 0), sticky='w')
+file_label.grid(row=0, column=1, padx=(10, 20), pady=(10, 0), sticky='w')
+folder_button.grid(row=1, column=0, padx=(10, 20), pady=(10, 0), sticky='w')
+folder_label.grid(row=1, column=1, padx=(10, 20), pady=(10, 0), sticky='w')
+label_sheet_name.grid(row=2, column=0, padx=(10, 20), pady=(10, 0), sticky='w')
+sheet_name_entry.grid(row=2, column=1, padx=(10, 20), pady=(10, 0), sticky='ew')
+start_button.grid(row=3, column=0, padx=(10, 20), pady=(10, 0), sticky='w')
+close_button.grid(row=3, column=1, padx=(10, 20), pady=(10, 0), sticky='w')
 
 root.mainloop()
