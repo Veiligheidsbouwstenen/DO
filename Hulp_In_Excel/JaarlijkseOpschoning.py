@@ -26,21 +26,25 @@ def browse_folder():
 
 def run_script():
     sheet_name = sheet_name_entry.get()
-    if not (input_file_path, output_dir, sheet_name):
-        messagebox.showerror("Error", "Geleive alles in te vullen en te selecteren.", background='black', foreground='white')
+    if not (input_file_path and output_dir and sheet_name):
+        messagebox.showerror("Error", "Gelieve alles in te vullen en te selecteren.")
         return
 
-    data = pd.read_excel(input_file_path, sheet_name=sheet_name)
-    if 'LastLoggedIn' in data.columns:
-        data['LastLoggedIn'] = pd.to_datetime(data['LastLoggedIn']).dt.strftime('%d-%m-%Y %H:%M:%S')
-    speciesdata = data["ID"].unique()
+    try:
+        data = pd.read_excel(input_file_path, sheet_name=sheet_name)
+        if 'LastLoggedIn' in data.columns:
+            data['LastLoggedIn'] = pd.to_datetime(data['LastLoggedIn']).dt.strftime('%d-%m-%Y %H:%M:%S')
+        speciesdata = data["ID"].unique()
 
-    for i in speciesdata:
-        filtered_data = data[data["ID"] == i]
-        filtered_data.to_excel(f"{output_dir}/{i}.xlsx", index=False)
-    
-    os.startfile(output_dir)
-    messagebox.showinfo("Voltooid", "Proces is perfect doorlopen!", background='black', foreground='white')
+        for i in speciesdata:
+            filtered_data = data[data["ID"] == i]
+            output_path = f"{output_dir}/{i}.xlsx"
+            filtered_data.to_excel(output_path, index=False)
+
+        os.startfile(output_dir)
+        messagebox.showinfo("Voltooid", "Proces is perfect doorlopen!")
+    except Exception as e:
+        messagebox.showerror("Error", f"Er is een fout opgetreden: {str(e)}")
 
 root = tk.Tk()
 root.title("Jaarlijkse opschoonactie Digitaal Ondertekenen")
