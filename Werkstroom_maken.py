@@ -2,18 +2,48 @@ import requests
 import json
 import tkinter as tk
 from tkinter import filedialog
-from datetime import datetime
 import os  # Voeg de os-module toe
 
 # Basis URL's voor de API
 ti_url = "https://digitaal-ondertekenen-openapi-ti.vlaanderen.be"
 prd_url = "https://digitaal-ondertekenen-openapi.vlaanderen.be"
 
-# Endpoints voor verificatie en package toevoeging
+# API endpoints
 client_credentials_endpoint = "/authenticate"
 password_credentials_endpoint = "/authenticate"
-add_package_endpoint = "/v4/packages"  # Nieuw endpoint voor het toevoegen van een pakket
-add_document_endpoint = "/v4/packages/{package_id}/documents"  # Endpoint voor het toevoegen van documenten
+add_package_endpoint = "/v4/packages"
+add_document_endpoint = "/v4/packages/{package_id}/documents"
+add_workflow_user_endpoint = "/v4/packages/{package_id}/workflow/users"
+
+# Functie om achtergrondkleur van radiobuttons te veranderen op basis van selectie
+def update_radiobutton_bg():
+    t_and_i_button.config(bg='black' if environment.get() != "T&I" else 'green')
+    prd_button.config(bg='black' if environment.get() != "PRD" else 'green')
+
+def add_user_to_workflow(package_id, document_id, user_email, permissions, user_name, order):
+    base_url = ti_url if "T&I" in client_id_entry.get() else prd_url
+    url = f"{base_url}{add_workflow_user_endpoint.format(package_id=package_habilitat, document_id=document_id)}"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
+    user_data = {
+        "email": user_email,
+        "permissions": permissions,
+        "username": user_name,
+        "order": order
+    }
+    response = requests.post(url, headers=headers, json=user_data)
+    print(f"Request to add user to workflow: URL={url}, Data={json.dumps(user_data)}, Status={response.status_code}, Response={response.text}")
+
+def handle_workflow_users(package_id, document_id):
+    users = [
+        {"email": "mark.lemmens@vlaanderen.be", "permissions": "SIGNER", "username": "Mark Lemmens", "order": 1},
+        {"email": "tomas.fulopp@vlaanderen.be", "permissions": "SIGNER", "username": "Tomas Fülöpp", "order": 2}
+    ]
+    for user in users:
+        add_user_to_workflow(package_id, document_id, user['email'], user['permissions'], user['username'], user['order'])
 
 # Functie om achtergrondkleur van radiobuttons te veranderen op basis van selectie
 def update_radiobutton_bg():
@@ -27,13 +57,11 @@ app.configure(bg='black')
 
 # Frame voor labels
 label_frame = tk.Frame(app, bg='black')
-label_frame.pack(padx=20, pady=(10, 5))  # Minder verticale padding hier
+label_frame.pack(padx=20, pady=(10, 5))
 
-# Label voor Package ID
+# Label voor Package ID en Document ID
 package_id_label = tk.Label(label_frame, text="Package ID:", bg='black', fg='white')
 package_id_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-# Label voor Document ID
 document_id_label = tk.Label(label_frame, text="Document ID:", bg='black', fg='white')
 document_id_label.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
@@ -44,6 +72,7 @@ document_id_var = tk.StringVar(value="")
 # Labels voor Package ID en Document ID
 package_id_value_label = tk.Label(label_frame, textvariable=package_id_var, bg='black', fg='white')
 document_id_value_label = tk.Label(label_frame, textvariable=document_id_var, bg='black', fg='white')
+
 
 # Functie om de rij met Package ID en Document ID weer te geven
 def show_package_document_row():
